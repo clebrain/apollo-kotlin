@@ -1,4 +1,3 @@
-
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
@@ -7,7 +6,10 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
-internal val allAppleTargets = setOf(
+private val enableAllAppleTargets = System.getenv("DISABLE_WATCH_TV_OS")?.toBoolean()?.not() ?: true
+
+internal val allAppleTargets = if (enableAllAppleTargets) {
+  setOf(
     "macosX64",
     "macosArm64",
     "iosArm64",
@@ -19,7 +21,16 @@ internal val allAppleTargets = setOf(
     "tvosArm64",
     "tvosX64",
     "tvosSimulatorArm64",
-)
+  )
+} else {
+  setOf(
+    "macosX64",
+    "macosArm64",
+    "iosArm64",
+    "iosX64",
+    "iosSimulatorArm64",
+  )
+}
 
 // Try to guess the dev machine to make sure the tests are running smoothly
 internal val hostTarget: String
@@ -29,9 +40,9 @@ internal val hostTarget: String
     "macosX64"
   }
 
-private val enableLinux = System.getenv("APOLLO_JVM_ONLY")?.toBoolean()?.not() ?: true
-private val enableJs = System.getenv("APOLLO_JVM_ONLY")?.toBoolean()?.not() ?: true
-private val enableApple = System.getenv("APOLLO_JVM_ONLY")?.toBoolean()?.not() ?: true
+private val enableLinux = System.getenv("DISABLE_LINUX")?.toBoolean()?.not() ?: true
+private val enableJs = System.getenv("DISABLE_JS")?.toBoolean()?.not() ?: true
+private val enableApple = System.getenv("DISABLE_APPLE")?.toBoolean()?.not() ?: true
 
 
 fun Project.configureMpp(
